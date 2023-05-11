@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text&display=swap');
+
+header {
+	display: flex;
+	flex-direction: row;
+    justify-content: center;
+	margin-bottom: 16px;
+	padding: 8px;
+}
+
+header img {
+	height: 200px;
+	margin-left: 1rem;
+}
+
+header h1 {
+	flex-grow: 1;
+}
+
+body {
+    font-family: 'Libre Caslon Text', sans-serif;
+}
