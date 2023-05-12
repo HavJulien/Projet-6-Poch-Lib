@@ -1,12 +1,12 @@
 const sectionBooks = document.querySelector("#myBooks");
 
 function initializePage(){
-    baseHTML();
-    showNewBookForm();
-    showDivContent();
+    generateTitleHTML();
+    generateButtonAddBook();
+    generateDivContent();
 }
 
-function baseHTML(){
+function generateTitleHTML(){
     // Création d’une balise dédiée au titre Nouveau Livre
     const titleNewBook = document.createElement("h2");
     titleNewBook.innerText = "Nouveau Livre";
@@ -15,7 +15,7 @@ function baseHTML(){
     sectionBooks.appendChild(titleNewBook);
 }
 
-function showDivContent(){
+function generateDivContent(){
     // Création d'une balise dédiée au séparateur
     const separator = document.createElement("hr");
     // Création d'une balise dédiée au contenu
@@ -33,7 +33,7 @@ function showDivContent(){
     content.appendChild(titleMyBooks);
 }
 
-function showAddBook(){
+function generateButtonAddBook(){
     // Création du bouton d'ajout de livre
     const buttonAddBook = document.createElement("button");
     buttonAddBook.innerText = "Ajouter un livre";
@@ -42,14 +42,14 @@ function showAddBook(){
 
     buttonAddBook.addEventListener("click", function () {
         sectionBooks.innerHTML = "";
-        baseHTML();
-        showNewBookForm();
-        showDivContent();
+        generateTitleHTML();
+        generateNewBookForm();
+        generateDivContent();
     });
 }
 
 
-function showNewBookForm(){
+function generateNewBookForm(){
     //Création d'une balise dédiée au formulaire
     const formNewBook = document.createElement("form");
     formNewBook.id = "formNewBook";
@@ -96,9 +96,9 @@ function showNewBookForm(){
 
     buttonCancel.addEventListener("click", function () {
         sectionBooks.innerHTML = "";
-        baseHTML();
-        showAddBook();
-        showDivContent();
+        generateTitleHTML();
+        generateButtonAddBook();
+        generateDivContent();
     });
 }
 
