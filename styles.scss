@@ -83,6 +83,9 @@ body {
     width:90%;
     align-self:center;
     
+    &:hover{
+        cursor:pointer;
+    }
     &--red {
       background-color: $red;
     }
@@ -98,15 +101,15 @@ body {
     grid-template-columns: repeat(1, 1fr);
   }
 
-  @media (min-width: ($phone-breakpoint + 1)) and (max-width: $tablet-breakpoint) {
+  @media (min-width: $phone-breakpoint + 1) and (max-width: $tablet-breakpoint) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (min-width: ($tablet-breakpoint + 1)) and (max-width: $small-screen-breakpoint) {
+  @media (min-width: $tablet-breakpoint + 1) and (max-width: $small-screen-breakpoint) {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  @media (min-width: ($small-screen-breakpoint + 1)) {
+  @media (min-width: $small-screen-breakpoint + 1) {
     grid-template-columns: repeat(4, 1fr);
   }
 

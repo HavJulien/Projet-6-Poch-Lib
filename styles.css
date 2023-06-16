@@ -72,6 +72,9 @@ body {
   width: 90%;
   align-self: center;
 }
+.searchDiv__button:hover {
+  cursor: pointer;
+}
 .searchDiv__button--red {
   background-color: #df5a4b;
 }
