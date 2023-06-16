@@ -1,6 +1,5 @@
 const sectionBooks = document.querySelector("#myBooks");
-import {bookSearchDiv, bookMarkedDiv, initializePage, renderBooks} from "./render.js";
-import {callGoogleBooksAPI} from "./api.js";
+import {initializePage} from "./render.js";
 
 initializePage();
 
