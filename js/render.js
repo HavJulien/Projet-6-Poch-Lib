@@ -28,6 +28,7 @@ function initVars(){
 }
 
 function renderPagination () {
+    let offset = 2;
     bookPaginationNav.innerHTML = "";
     if (currentBooksSearched == null) return;
 
@@ -58,7 +59,7 @@ function renderPagination () {
     bookPaginationNav.appendChild(prevButton);
     appendPageNumber(1);
     if (currentPage > 3) addSpan();
-    renderPaginationNumbers();
+    renderPaginationNumbers(offset);
     if (currentPage < maxBookPage - 2) addSpan();
     appendPageNumber(maxBookPage);
     bookPaginationNav.appendChild(nextButton);
@@ -96,10 +97,10 @@ async function renderNewResultByPage(pageNumber){
     renderPagination();
 }
 
-function renderPaginationNumbers () {
+function renderPaginationNumbers (offset) {
     for (let i = 1; i <= maxBookPage; i++) {
         if (i === 1 || i === maxBookPage) continue;
-        if (i < currentPage - 1 || i > currentPage + 1){
+        if (i < currentPage - offset || i > currentPage + offset){
             continue;
         }
         appendPageNumber(i);
