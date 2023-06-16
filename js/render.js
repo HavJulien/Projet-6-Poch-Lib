@@ -1,12 +1,16 @@
+/*
+    Ce fichier contient les fonctions permettant de générer le rendu dynamique de la page.
+*/
+
 import {callGoogleBooksAPI} from "./api.js";
 import {getBookmarkedBooks, handleBookmarkClick, isBookmarked} from "./state.js";
 
 
-// Structure HTML du rendu dynamique de la page
-let bookFormDiv;
-let bookSearchDiv;
-export let bookSearchResultDiv;
-let bookPaginationNav;
+// Variables de la structure dynamique de la page
+let bookFormDiv; // Section du formulaire de recherche
+let bookSearchDiv; // Section globale des résultats de recherche
+export let bookSearchResultDiv; // Section des livres recherchés
+let bookPaginationNav; 
 export let bookMarkedDiv;
 
 // Variables de gestion de la pagination
@@ -14,6 +18,8 @@ let currentBooksSearched = null;
 let maxBookPage;
 let currentPage;
 
+
+// Initialisation des variables de rendu
 function initVars(){
     const hr = document.querySelectorAll("hr")[0];
     bookFormDiv = document.createElement("div");
@@ -31,21 +37,26 @@ function initVars(){
     h2Content.parentNode.insertBefore(bookMarkedDiv, h2Content.nextSibling);
 }
 
+// Fonction de rendu de la pagination
 function renderPagination () {
-    let offset = 2;
-    bookPaginationNav.innerHTML = "";
     if (currentBooksSearched == null) return;
 
+    let offset = 2; // Nombre de pages affichées de chaque côté de la page courante
+    bookPaginationNav.innerHTML = "";
+
+    //Création du bouton Previous Page
     const prevButton = document.createElement("button");
     prevButton.id = "prev-button";
     prevButton.innerText = "<";
     prevButton.title = "Previous page";
     prevButton.value = (currentPage - 1) < 1 ? 1 : currentPage - 1;
     prevButton.classList.add("pagination__button");
+
     prevButton.addEventListener("click", async () => {
         renderNewResultByPage(prevButton.value)
     });
 
+    //Création du bouton Next Page
     const nextButton = document.createElement("button");
     nextButton.id = "next-button";
     nextButton.innerText = ">";
@@ -57,19 +68,24 @@ function renderPagination () {
         renderNewResultByPage(nextButton.value)
     });
 
-    var span = document.createElement("span");
-    span.innerText = "...";
-
+    //On rajoute toujours le bouton Previous Page en premier
     bookPaginationNav.appendChild(prevButton);
+    //On ajoute la page 1
     appendPageNumber(1);
-    if (currentPage > 3) addSpan();
+    //On ajoute les ... si nécessaire
+    if (currentPage > (offset+2)) addThreeDotsSpan();
+    //On ajoute les pages entre la page 1 et la page courante en fonction de l'offset
     renderPaginationNumbers(offset);
-    if (currentPage < maxBookPage - 2) addSpan();
+    //On ajoute les ... si nécessaire
+    if (currentPage < maxBookPage - (offset + 1)) addThreeDotsSpan();
+    //On rajoute la dernière page
     appendPageNumber(maxBookPage);
+    //On finit par le bouton Next Page
     bookPaginationNav.appendChild(nextButton);
 }
 
-function addSpan(){
+// Fonction d'ajout des ... dans la pagination
+function addThreeDotsSpan(){
     var span = document.createElement("span");
     span.innerText = "...";
     bookPaginationNav.appendChild(span);
@@ -90,17 +106,7 @@ function appendPageNumber(index) {
     });
 }
 
-async function renderNewResultByPage(pageNumber){
-    const inputTitle = document.getElementById("title");
-    const inputAuthor = document.getElementById("author");
-    var data = await callGoogleBooksAPI(inputTitle.value, inputAuthor.value, pageNumber);
-    setMaxPage(data);
-    currentBooksSearched = getBooks(data);
-    renderSearch(currentBooksSearched);
-    currentPage = parseInt(pageNumber);
-    renderPagination();
-}
-
+// Fonction d'ajout des numéros de page dans la pagination
 function renderPaginationNumbers (offset) {
     for (let i = 1; i <= maxBookPage; i++) {
         if (i === 1 || i === maxBookPage) continue;
@@ -111,33 +117,53 @@ function renderPaginationNumbers (offset) {
     }
 };
 
-function renderSearch(books){
-    if (books == null) return;
+// Fonction de rendu des résultats de recherche en fonction de la page
+async function renderNewResultByPage(pageNumber){
+    const inputTitle = document.getElementById("title");
+    const inputAuthor = document.getElementById("author");
 
+    var data = await callGoogleBooksAPI(inputTitle.value, inputAuthor.value, pageNumber);
+    
+    currentBooksSearched = getBooks(data);
+    currentPage = parseInt(pageNumber);
+
+    setMaxPage(data);
+    renderSearch(currentBooksSearched);
+    renderPagination();
+}
+
+// Fonction de rendu de la recherche
+function renderSearch(books){
     bookSearchDiv.innerHTML = "";
     const titleSearch = document.createElement("h2");
     titleSearch.innerText = "Résultats de la recherche";
     bookSearchDiv.appendChild(titleSearch);
 
+    // Si aucun livre n'est trouvé, on affiche un message
     if (books == null){
         const noResult = document.createElement("p");
         noResult.innerText = "Aucun livre n’a été trouvé";
         bookSearchDiv.appendChild(noResult);
         return;
     }
+
+    // On crée la section des résultats de recherche des livres
     bookSearchResultDiv = document.createElement("div");
     bookSearchResultDiv.classList.add("booklist");
     bookSearchDiv.appendChild(bookSearchResultDiv);
 
+    // On affiche les livres trouvés
     renderBooks(books, bookSearchResultDiv);
 }
 
+// Renvoit le style du bouton de bookmark en fonction de la section dans laquelle il se trouve
 function getBookmarkStyle(sectionContent){
     if (sectionContent === bookMarkedDiv) return ["fa-solid", "fa-trash"];
     if (sectionContent === bookSearchResultDiv) return ["fa-solid", "fa-bookmark"];
     return [""];
 }
 
+// Fonction de rendu des livres
 function renderBooks(books, sectionContent){
     sectionContent.innerHTML = "";
     if (books == null) return;
@@ -155,24 +181,32 @@ function renderBooks(books, sectionContent){
 
         // Création des balises 
         const imageElement = document.createElement("img");
+        // Si l'image n'est pas disponible, on affiche une image par défaut
         imageElement.src = book.volumeInfo.imageLinks?.smallThumbnail ?? "./images/unavailable.png";
 
+        //Titre
         const nomElement = document.createElement("h3");
         nomElement.innerText = "Titre : " + book.volumeInfo?.title ?? "Pas de titre";
 
+        //Bookmark
         const bookmarkElement = document.createElement("i");
         bookmarkElement.classList.add(...bookmarkStyle);
         
+        //Wrapper pour Titre et Bookmark -> Permet de les afficher sur la même ligne
         const divTitleWrapper = document.createElement("div");
         divTitleWrapper.classList.add("booklist__book__title");
         divTitleWrapper.appendChild(nomElement);
         divTitleWrapper.appendChild(bookmarkElement);
+
+        //ID
         const idElement = document.createElement("h4");
         idElement.innerText = "ID : " + book.id;
 
+        //Auteur
         const authorElement = document.createElement("h4");
         authorElement.innerText = "Auteur : " + book.volumeInfo.authors?.[0] ?? "Auteur inconnu";
 
+        //Description
         const descriptionElement = document.createElement("p");
         descriptionElement.innerText = setDescription(book.volumeInfo?.description);
         
@@ -192,24 +226,27 @@ function renderBooks(books, sectionContent){
      }
 }
 
+// Fonction de rendu du bouton d'ajout de livre
 function renderButtonAddBook(){
     // Création du bouton d'ajout de livre
     const buttonAddBook = document.createElement("button");
     buttonAddBook.innerText = "Ajouter un livre";
     buttonAddBook.classList.add("searchDiv__button");
-    // On rattache la balise buttonAddBook a la section Books
     bookFormDiv.appendChild(buttonAddBook);
 
+    // Lors du clic sur le bouton, on affiche le formulaire d'ajout de livre
     buttonAddBook.addEventListener("click", () => {
         bookFormDiv.innerHTML = "";
         renderNewBookForm();
     });
 }
 
+// Fonction de rendu du formulaire de recherche de livre
 function renderNewBookForm(){
     //Création d'une balise dédiée au formulaire
     const formNewBook = document.createElement("form");
     formNewBook.classList.add("searchDiv__form");
+
     //Création d'une balise dédiée au label du titre
     const labelTitle = document.createElement("label");
     labelTitle.innerText = "Titre";
@@ -220,6 +257,7 @@ function renderNewBookForm(){
     inputTitle.setAttribute("type", "text");
     inputTitle.setAttribute("name", "title");
     inputTitle.setAttribute("placeholder", "Titre du livre");
+
     //Création d'une balise dédiée au label de l'auteur
     const labelAuthor = document.createElement("label");
     labelAuthor.innerText = "Auteur";
@@ -238,15 +276,12 @@ function renderNewBookForm(){
     buttonSearch.setAttribute("type", "button");
     buttonSearch.classList.add("searchDiv__button");
 
-
     //Création du bouton d'annulation
     const buttonCancel = document.createElement("button");
     buttonCancel.id = "cancel";
     buttonCancel.innerText = "Annuler";
     buttonCancel.setAttribute("type", "reset");
     buttonCancel.classList.add("searchDiv__button", "searchDiv__button--red");
-
-
 
     // Rajout des éléments dans la page
     bookFormDiv.appendChild(formNewBook);
@@ -257,10 +292,12 @@ function renderNewBookForm(){
     formNewBook.appendChild(buttonSearch);
     formNewBook.appendChild(buttonCancel);
 
+    // Lors du clic sur le bouton de recherche, on affiche les résultats de la recherche à la page 1
     buttonSearch.addEventListener("click", async () => {
         renderNewResultByPage(1)
     });
 
+    // Lors du clic sur le bouton d'annulation, on réinitialise la page
     buttonCancel.addEventListener("click", function () {
         bookFormDiv.innerHTML = "";
         bookSearchDiv.innerHTML = "";
@@ -271,30 +308,38 @@ function renderNewBookForm(){
     });
 }
 
+// Fonction d'initialisation de la page
 export function initializePage(){
+    // On initialise les variables de rendu
     initVars();
+    // On affiche seulement le bouton d'ajout de livre
     renderButtonAddBook();
+    // On affiche les livres déjà bookmarkés
     renderBooks(getBookmarkedBooks(), bookMarkedDiv);
 }
 
-
+// Fonction de récupération des livres depuis le JSON de l'API
 function getBooks(data){
     if (data == null) return null;
     return data["items"];
 }
 
+// Fonction pour définir le nombre de pages maximum
 function setMaxPage(data){
     if (data == null){
         maxBookPage = 1;
         return;
     };
+    // totalItems correspond au nombre de livres trouvés, valeur renvoyée par l'API
     maxBookPage = Math.ceil(data["totalItems"] / 10);
 }
 
+// Fonction pour définir la description d'un livre
 function setDescription(text){
     if (text == null){
         return "Information manquante.";
     }
+    // Si la description est trop longue, on la tronque
     if (text.length > 200){
         return text.substring(0, 200) + "...";
     }
