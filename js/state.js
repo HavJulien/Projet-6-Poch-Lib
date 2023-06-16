@@ -1,4 +1,4 @@
-// sessionStorage.clear();
+import {bookSearchResultDiv, bookMarkedDiv} from './render.js';
 export const state = initState();
 
 export function saveBookMark(book) {
@@ -23,8 +23,20 @@ export function getBookmarkedBooks(){
     return books;
 }
 
-export function handleBookmarkClick(book){
-    isBookmarked(book) ? removeBookMark(book.id) : saveBookMark(book);
+function showErrorBookmarked(book){
+    let alertMsg = `The book ${book.volumeInfo.title}, ID : ${book.id} is already bookmarked.`;
+    alert(alertMsg);
+}
+
+export function handleBookmarkClick(book, sectionContent){
+    if (sectionContent == bookSearchResultDiv) {
+        isBookmarked(book) ? showErrorBookmarked(book) : saveBookMark(book);
+        return;
+    }
+    if (sectionContent == bookMarkedDiv) {
+        removeBookMark(book.id);
+        return;
+    }
 }
 
 function initState(){

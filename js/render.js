@@ -1,12 +1,16 @@
 import {callGoogleBooksAPI} from "./api.js";
 import {getBookmarkedBooks, handleBookmarkClick, isBookmarked} from "./state.js";
 
+
+// Structure HTML du rendu dynamique de la page
 let bookFormDiv;
-export let bookSearchDiv;
+let bookSearchDiv;
+export let bookSearchResultDiv;
 let bookPaginationNav;
 export let bookMarkedDiv;
 
-export let currentBooksSearched = null;
+// Variables de gestion de la pagination
+let currentBooksSearched = null;
 let maxBookPage;
 let currentPage;
 
@@ -121,18 +125,25 @@ function renderSearch(books){
         bookSearchDiv.appendChild(noResult);
         return;
     }
-    const divResult = document.createElement("div");
-    divResult.classList.add("booksDiv");
-    bookSearchDiv.appendChild(divResult);
+    bookSearchResultDiv = document.createElement("div");
+    bookSearchResultDiv.classList.add("booksDiv");
+    bookSearchDiv.appendChild(bookSearchResultDiv);
 
-    renderBooks(books, divResult);
+    renderBooks(books, bookSearchResultDiv);
 }
 
-export function renderBooks(books, sectionContent){
-    sectionContent.innerHTML = "";
+function getBookmarkStyle(sectionContent){
+    if (sectionContent === bookMarkedDiv) return ["fa-solid", "fa-trash"];
+    if (sectionContent === bookSearchResultDiv) return ["fa-solid", "fa-bookmark"];
+    return [""];
+}
 
+function renderBooks(books, sectionContent){
+    sectionContent.innerHTML = "";
     if (books == null) return;
 
+    let bookmarkStyle = getBookmarkStyle(sectionContent);
+    console.log(bookmarkStyle);
     // Récupération des données
     for (let i = 0; i < books.length; i++) {
 
@@ -150,11 +161,7 @@ export function renderBooks(books, sectionContent){
         nomElement.innerText = "Titre : " + book.volumeInfo?.title ?? "Pas de titre";
 
         const bookmarkElement = document.createElement("i");
-        if (isBookmarked(book)){
-            bookmarkElement.classList.add("fa-solid", "fa-trash");
-        } else {
-            bookmarkElement.classList.add("fa-solid", "fa-bookmark");
-        }
+        bookmarkElement.classList.add(...bookmarkStyle);
         
         const divTitleWrapper = document.createElement("div");
         divTitleWrapper.classList.add("booksDiv__article__titleWrapper");
@@ -178,15 +185,14 @@ export function renderBooks(books, sectionContent){
         bookElement.appendChild(imageElement);
 
         bookmarkElement.addEventListener("click", () => {
-            handleBookmarkClick(book);
-            renderSearch(currentBooksSearched);
+            handleBookmarkClick(book, sectionContent);
             renderBooks(getBookmarkedBooks(), bookMarkedDiv);
         });
 
      }
 }
 
-export function renderButtonAddBook(){
+function renderButtonAddBook(){
     // Création du bouton d'ajout de livre
     const buttonAddBook = document.createElement("button");
     buttonAddBook.innerText = "Ajouter un livre";
@@ -200,7 +206,7 @@ export function renderButtonAddBook(){
     });
 }
 
-export function renderNewBookForm(){
+function renderNewBookForm(){
     //Création d'une balise dédiée au formulaire
     const formNewBook = document.createElement("form");
     formNewBook.classList.add("searchDiv__form");
