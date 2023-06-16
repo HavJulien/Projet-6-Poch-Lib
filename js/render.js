@@ -27,7 +27,7 @@ function initVars(){
 
     const h2Content = document.querySelectorAll("#content h2")[0];
     bookMarkedDiv = document.createElement("div");
-    bookMarkedDiv.classList.add("booksDiv");
+    bookMarkedDiv.classList.add("booklist");
     h2Content.parentNode.insertBefore(bookMarkedDiv, h2Content.nextSibling);
 }
 
@@ -126,7 +126,7 @@ function renderSearch(books){
         return;
     }
     bookSearchResultDiv = document.createElement("div");
-    bookSearchResultDiv.classList.add("booksDiv");
+    bookSearchResultDiv.classList.add("booklist");
     bookSearchDiv.appendChild(bookSearchResultDiv);
 
     renderBooks(books, bookSearchResultDiv);
@@ -151,7 +151,7 @@ function renderBooks(books, sectionContent){
         
         // Création d’une balise dédiée à un livre
         const bookElement = document.createElement("article");
-        bookElement.classList.add("booksDiv__article");
+        bookElement.classList.add("booklist__book");
 
         // Création des balises 
         const imageElement = document.createElement("img");
@@ -164,7 +164,7 @@ function renderBooks(books, sectionContent){
         bookmarkElement.classList.add(...bookmarkStyle);
         
         const divTitleWrapper = document.createElement("div");
-        divTitleWrapper.classList.add("booksDiv__article__titleWrapper");
+        divTitleWrapper.classList.add("booklist__book__title");
         divTitleWrapper.appendChild(nomElement);
         divTitleWrapper.appendChild(bookmarkElement);
         const idElement = document.createElement("h4");

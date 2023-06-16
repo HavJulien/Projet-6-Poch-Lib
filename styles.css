@@ -18,7 +18,7 @@ header img {
   height: auto;
   width: auto\9 ;
 }
-@media (min-width: 300px) {
+@media (min-width: 320px) {
   header img {
     max-width: 300px;
   }
@@ -28,7 +28,7 @@ body {
   font-family: "Nunito", sans-serif;
   padding: 0 32px;
 }
-@media (max-width: 400px) {
+@media (max-width: 480px) {
   body {
     padding: 0 16px;
   }
@@ -51,7 +51,7 @@ body {
   flex-direction: column;
 }
 .searchDiv__form {
-  min-width: 360px;
+  min-width: 320px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -76,7 +76,7 @@ body {
   background-color: #df5a4b;
 }
 
-.booksDiv {
+.booklist {
   flex: 1;
   margin: 8px auto;
   display: grid;
@@ -84,27 +84,27 @@ body {
   width: 100%;
   position: relative;
 }
-@media (min-width: 1px) and (max-width: 500px) {
-  .booksDiv {
+@media (min-width: 1px) and (max-width: 480px) {
+  .booklist {
     grid-template-columns: repeat(1, 1fr);
   }
 }
-@media (min-width: 501px) and (max-width: 750px) {
-  .booksDiv {
+@media (min-width: 481px) and (max-width: 768px) {
+  .booklist {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (min-width: 751px) and (max-width: 1000px) {
-  .booksDiv {
+@media (min-width: 769px) and (max-width: 1024px) {
+  .booklist {
     grid-template-columns: repeat(3, 1fr);
   }
 }
-@media (min-width: 1001px) {
-  .booksDiv {
+@media (min-width: 1025px) {
+  .booklist {
     grid-template-columns: repeat(4, 1fr);
   }
 }
-.booksDiv__article {
+.booklist__book {
   display: flex;
   flex-direction: column;
   border: 1px solid black;
@@ -112,7 +112,7 @@ body {
   padding: 32px 16px 16px 16px;
   overflow: hidden;
 }
-.booksDiv__article__titleWrapper {
+.booklist__book__title {
   display: flex;
   align-items: start;
   justify-content: space-between;
@@ -120,34 +120,34 @@ body {
   margin-bottom: 16px;
   overflow: hidden;
 }
-.booksDiv__article h3 {
+.booklist__book h3 {
   font-size: 16px;
   margin: 0 0 16px 0;
   overflow: hidden;
 }
-.booksDiv__article i {
+.booklist__book i {
   display: inline;
   margin: 0 0 16px 16px;
   font-size: 32px;
   color: #469388;
   transition: font-size 0.5s, color 0.5s;
 }
-.booksDiv__article i:hover {
+.booklist__book i:hover {
   color: #df5a4b;
   cursor: pointer;
   font-size: 48px;
 }
-.booksDiv__article h4 {
+.booklist__book h4 {
   margin: 0 0 16px 0;
   margin-top: 0;
   font-style: italic;
 }
-.booksDiv__article img {
+.booklist__book img {
   display: block;
   max-width: 100px;
   align-self: center;
 }
-.booksDiv__article p {
+.booklist__book p {
   margin: 0 0 16px 0;
   font-size: small;
   flex: 1;
@@ -158,7 +158,7 @@ body {
   font-size: 32px;
 }
 .pagination__button {
-  font-size: 16px;
+  font-size: 32px;
   border: none;
   background: none;
   cursor: pointer;
